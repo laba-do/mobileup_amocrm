@@ -67,8 +67,7 @@ export class AmocrmSerivce implements OnModuleInit {
         subdomain: this.amocrmConfig.subdomain,
       };
     } catch (error) {
-      console.error(error);
-      throw error;
+      this.logAxiosError(error);
     }
   }
 
@@ -112,8 +111,19 @@ export class AmocrmSerivce implements OnModuleInit {
         subdomain: this.amocrmConfig.subdomain,
       };
     } catch (error) {
-      console.error(error);
-      throw error;
+      this.logAxiosError(error);
+    }
+  }
+
+  private logAxiosError(error) {
+    if (error.response) {
+      console.error(error.response.data);
+      console.error(error.response.status);
+      console.error(error.response.headers);
+    } else if (error.request) {
+      console.error(error.request);
+    } else {
+      console.error('Error', error.message);
     }
   }
 }

@@ -3,11 +3,16 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import * as helmet from 'helmet';
+
 import { AppModule } from './app.module';
 
 const logger = new Logger('Bootstrap');
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({ origin: true });
+  app.use(helmet({}));
 
   const config = app.get(ConfigService);
   const appPort = config.get<string>('app.port');
