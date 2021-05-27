@@ -18,4 +18,16 @@ export class AmocrmController {
   async getKeys() {
     return await this.amocrmService.refreshTokens();
   }
+
+  @ApiOperation({
+    description: 'Инициализировать новые ключи',
+    summary: 'Инициализировать новые ключи',
+  })
+  @ApiResponse({
+    schema: { example: { access_token: 'string', subdomain: 'string' } },
+  })
+  @Get()
+  async initKeys() {
+    return await this.amocrmService.initAccessToken();
+  }
 }

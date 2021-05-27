@@ -26,13 +26,14 @@ export class AmocrmSerivce implements OnModuleInit {
     }
   }
 
-  // Gets or refreshes the tokens on application bootstap
+  // Get tokens on application bootstap
   async onModuleInit(): Promise<void> {
     const entity = await this.amoCrmRepo.findOne(1);
+
     if (!entity) {
       await this.initAccessToken();
     } else {
-      await this.refreshTokens();
+      console.log(`[${AmocrmSerivce.name}] onModuleInit entity exists already`);
     }
   }
 
@@ -100,13 +101,14 @@ export class AmocrmSerivce implements OnModuleInit {
         )
         .toPromise();
 
-      const updated = await this.amoCrmRepo.save({
-        id: 1,
-        ...res.data,
-      });
+      entity.access_token = res.data.access_token;
+      entity.refresh_token = res.data.refresh_token;
+      entity.token_type = res.data.token_type;
+      entity.expires_in = res.data.expires_in;
+      await this.amoCrmRepo.save(entity);
 
       return {
-        access_token: updated.access_token,
+        access_token: res.data.access_token,
         subdomain: this.amocrmConfig.subdomain,
       };
     } catch (error) {

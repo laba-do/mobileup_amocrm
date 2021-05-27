@@ -23,11 +23,29 @@ async function bootstrap() {
       target: proxyUrl,
       changeOrigin: true,
       onProxyRes: (proxyRes) => {
-        delete proxyRes.headers['access-control-allow-headers'];
-        delete proxyRes.headers['access-control-allow-methods'];
-        delete proxyRes.headers['access-control-allow-origin'];
-        delete proxyRes.headers['access-control-expose-headers'];
+        const sc = proxyRes.headers['set-cookie'];
+        if (Array.isArray(sc)) {
+          proxyRes.headers['set-cookie'] = sc
+            .map((sc) => {
+              return sc
+                .split(';')
+                .filter((v) => v.trim().toLowerCase() !== 'secure')
+                .join('; ');
+            })
+            .map((sc) => {
+              return sc
+                .split(';')
+                .filter((v) => v.trim().toLowerCase() !== 'samesite=none')
+                .join('; ');
+            });
+        }
       },
+      // onProxyRes: (proxyRes) => {
+      //   delete proxyRes.headers['access-control-allow-headers'];
+      //   delete proxyRes.headers['access-control-allow-methods'];
+      //   delete proxyRes.headers['access-control-allow-origin'];
+      //   delete proxyRes.headers['access-control-expose-headers'];
+      // },
     }),
   );
 
