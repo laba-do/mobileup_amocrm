@@ -23,7 +23,7 @@ async function bootstrap() {
   const proxyUrl = `https://${subdomain}.amocrm.ru`;
 
   app.use(
-    ['/api/v4/companies'],
+    '/api/v4/',
     createProxyMiddleware({
       target: proxyUrl,
       changeOrigin: true,
